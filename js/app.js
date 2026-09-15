@@ -23,13 +23,13 @@
     preferCanvas: true
   }).setView([37.9, 138.2], 6);
 
-  L.tileLayer("https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution:  "Tiles &copy; Esri",
-    maxZoom: 16
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png?key=cb1_3lv1_1_85b7f9c7a47c46d1ea178d1d", {
+    attribution:  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: "abcd", 
+    maxZoom: 19
   }).addTo(map);
 
-  L.tileLayer("https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 16,
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png?key=cb1_3lv1_1_85b7f9c7a47c46d1ea178d1d", {subdomains: "abcd", 
+    maxZoom: 19,
     pane: "shadowPane"
   }).addTo(map);
 
