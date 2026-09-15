@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japan Transmission Grid Map — 日本送電系統図</title>
+<meta name="description" content="An interactive, community-editable map of Japan's electricity transmission network — transmission lines, substations, power plants, and converter stations.">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-repo-url="https://github.com/sileem88/japan-transmission-map">
+
+<div id="app">
+
+  <header id="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>Japan Transmission Grid</h1>
+        <p class="brand-sub">日本送電系統図 &mdash; community-maintained</p>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <a id="download-btn" class="btn btn-primary" href="data/送電系統図_20260915.kmz" download>
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path d="M8 1v9m0 0l-3.2-3.2M8 10l3.2-3.2M2 12.5v1a1 1 0 001 1h10a1 1 0 001-1v-1" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download KMZ
+      </a>
+      <a id="github-btn" class="btn btn-ghost" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 005.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Contribute on GitHub
+      </a>
+      <button id="sidebar-toggle" class="btn btn-icon" aria-label="Toggle layer panel" aria-expanded="true">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 3h12M2 8h12M2 13h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div id="body-row">
+
+    <aside id="sidebar">
+      <div class="panel-scroll">
+
+        <section class="panel-block">
+          <h2>Layers</h2>
+          <label class="check-row">
+            <input type="checkbox" data-layer="送電線" checked>
+            <span class="check-swatch swatch-line" aria-hidden="true"></span>
+            <span class="check-label">Transmission lines</span>
+            <span class="check-count" data-count="送電線"></span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-layer="変電所" checked>
+            <span class="check-swatch swatch-substation" aria-hidden="true"></span>
+            <span class="check-label">Substations</span>
+            <span class="check-count" data-count="変電所"></span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-layer="発電所" checked>
+            <span class="check-swatch swatch-plant" aria-hidden="true"></span>
+            <span class="check-label">Power plants</span>
+            <span class="check-count" data-count="発電所"></span>
+          </label>
+          <label class="check-row">
+            <input type="checkbox" data-layer="変換所" checked>
+            <span class="check-swatch swatch-converter" aria-hidden="true"></span>
+            <span class="check-label">Converter stations</span>
+            <span class="check-count" data-count="変換所"></span>
+          </label>
+        </section>
+
+        <section class="panel-block">
+          <h2>Utility</h2>
+          <select id="company-filter">
+            <option value="">All companies</option>
+          </select>
+        </section>
+
+        <section class="panel-block">
+          <h2>Voltage</h2>
+          <ul id="voltage-legend" class="legend-list"></ul>
+        </section>
+
+        <section class="panel-block panel-block-stats">
+          <h2>This map</h2>
+          <p class="stat-line"><span id="stat-total">&mdash;</span> features loaded</p>
+          <p class="panel-note">
+            Traced in Google Earth from public utility grid-connection diagrams. Line
+            routes are approximate &mdash; corridors and structures, not surveyed positions.
+            Found an error or missing line? See the contribute guide in the README.
+          </p>
+        </section>
+
+      </div>
+    </aside>
+
+    <main id="map"></main>
+
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
